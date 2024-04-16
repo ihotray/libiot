@@ -74,6 +74,7 @@
 #define FIELD_DATA "data"
 #define FIELD_USERNAME "username"
 #define FIELD_PASSWORD "password"
+#define FIELD_CLIENT "client"
 #define FIELD_NONCE "nonce"
 #define FIELD_TOKEN "token"
 #define FIELD_TIMEOUT "timeout"
