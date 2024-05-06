@@ -5547,6 +5547,9 @@ void mg_tls_init(struct mg_connection *c, const struct mg_tls_opts *opts) {
     goto fail;
   }
   MG_DEBUG(("%lu Setting TLS", c->id));
+#if defined(MBEDTLS_VERSION_NUMBER) && MBEDTLS_VERSION_NUMBER >= 0x03000000
+  psa_crypto_init();
+#endif
   mbedtls_ssl_init(&tls->ssl);
   mbedtls_ssl_config_init(&tls->conf);
   mbedtls_x509_crt_init(&tls->ca);
