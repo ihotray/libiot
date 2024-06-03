@@ -1787,6 +1787,7 @@ void mg_http_serve_file(struct mg_connection *c, struct mg_http_message *hm,
   }
 }
 
+/**
 struct printdirentrydata {
   struct mg_connection *c;
   struct mg_http_message *hm;
@@ -1900,6 +1901,7 @@ static void listdir(struct mg_connection *c, struct mg_http_message *hm,
   memcpy(c->send.buf + off - 12, tmp, n);  // Set content length
   c->is_resp = 0;                          // Mark response end
 }
+**/
 
 // Resolve requested file into `path` and return its fs->st() result
 static int uri_to_path2(struct mg_connection *c, struct mg_http_message *hm,
@@ -1974,7 +1976,9 @@ void mg_http_serve_dir(struct mg_connection *c, struct mg_http_message *hm,
   if (flags < 0) {
     // Do nothing: the response has already been sent by uri_to_path()
   } else if (flags & MG_FS_DIR) {
-    listdir(c, hm, opts, path);
+    // Don't list directories, just serve index.html or Not found
+    //listdir(c, hm, opts, path);
+    mg_http_reply(c, 404, opts->extra_headers, "Not found\n");
   } else if (flags && sp != NULL &&
              mg_globmatch(sp, strlen(sp), path, strlen(path))) {
     mg_http_serve_ssi(c, opts->root_dir, path);
