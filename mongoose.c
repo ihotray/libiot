@@ -251,11 +251,18 @@ static void dns_cb(struct mg_connection *c, int ev, void *ev_data,
   struct dns_data *d, *tmp;
   if (ev == MG_EV_POLL) {
     uint64_t now = *(uint64_t *) ev_data;
+    bool timeout = false;
     for (d = (struct dns_data *) c->mgr->active_dns_requests; d != NULL;
          d = tmp) {
       tmp = d->next;
       // MG_DEBUG ("%lu %lu dns poll", d->expire, now));
-      if (now > d->expire) mg_error(d->c, "DNS timeout");
+      if (now > d->expire) {
+        timeout = true;
+        mg_error(d->c, "DNS timeout");
+      }
+    }
+    if (timeout) {
+      c->is_draining = 1;
     }
   } else if (ev == MG_EV_READ) {
     struct mg_dns_message dm;
