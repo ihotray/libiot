@@ -2023,7 +2023,11 @@ void mg_http_creds(struct mg_http_message *hm, char *user, size_t userlen,
   user[0] = pass[0] = '\0';
   if (v != NULL && v->len > 6 && memcmp(v->ptr, "Basic ", 6) == 0) {
     char buf[256];
-    int n = mg_base64_decode(v->ptr + 6, (int) v->len - 6, buf);
+    int len = (int) v->len - 6;
+    if (sizeof(buf) < len / 4 * 3 + 1) {
+      return;
+    }
+    int n = mg_base64_decode(v->ptr + 6, len, buf);
     const char *p = (const char *) memchr(buf, ':', n > 0 ? (size_t) n : 0);
     if (p != NULL) {
       mg_snprintf(user, userlen, "%.*s", (int) (p - buf), buf);
