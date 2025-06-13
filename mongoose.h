@@ -1094,6 +1094,21 @@ void mg_sha1_update(mg_sha1_ctx *, const unsigned char *data, size_t len);
 void mg_sha1_final(unsigned char digest[20], mg_sha1_ctx *);
 
 
+typedef struct {
+  uint32_t state[8];
+  uint64_t bits;
+  uint32_t len;
+  unsigned char buffer[64];
+} mg_sha256_ctx;
+
+
+void mg_sha256_init(mg_sha256_ctx *);
+void mg_sha256_update(mg_sha256_ctx *, const unsigned char *data, size_t len);
+void mg_sha256_final(unsigned char digest[32], mg_sha256_ctx *);
+void mg_sha256(uint8_t dst[32], uint8_t *data, size_t datasz);
+void mg_hmac_sha256(uint8_t dst[32], uint8_t *key, size_t keysz, uint8_t *data,
+                    size_t datasz);
+
 struct mg_connection;
 typedef void (*mg_event_handler_t)(struct mg_connection *, int ev,
                                    void *ev_data, void *fn_data);
